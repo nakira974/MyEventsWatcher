@@ -18,4 +18,7 @@ public class AppConfig
     
     [JsonPropertyName("discoveryBaseUri")]
     public string? DiscoveryBaseUri { get; set; }
+    
+    [JsonPropertyName("relationship")]
+    public string? Relationship { get; set; }
 }

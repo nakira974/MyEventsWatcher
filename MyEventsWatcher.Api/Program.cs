@@ -54,6 +54,15 @@ builder.Services.AddHttpClient("Entities",
         
     });
 
+builder.Services.AddHttpClient("Entities-Relationship",
+    client =>
+    {
+        client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:relationship")
+            .Get<string>());
+        client.DefaultRequestHeaders.Add("User-Agent", "MyEventsWatcher-Api");
+        
+    });
+
 builder.Services.AddHttpClient("DiscoveryApi",
     client =>
     {

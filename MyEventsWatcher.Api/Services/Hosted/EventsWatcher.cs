@@ -40,40 +40,49 @@ public class EventsWatcher : IHostedService, IDisposable
     {
         var count = Interlocked.Increment(ref _executionCount);
         var eventsPool = _httpClient.CreateClient("Events");
-        var venuesPool = _httpClient.CreateClient("Venues");
-        var orionClient = _httpClient.CreateClient("Entities");
-
+        
         try
         {
             var discoveryEvents = await eventsPool.GetFromJsonAsync<DiscoveryEvents?>(string.Empty);
-            var response = await venuesPool.GetAsync(string.Empty);
-            var discoveryVenues = await _jsonSerializer.DeserializeAsync<DiscoveryVenues?>(await response.Content.ReadAsStringAsync());
             var events = new List<DiscoveryEvent?>(discoveryEvents.Embedded.Events.Count);
-            var orionRecords = new List<Event>();
-            var json = string.Empty;
+            var relationshipEntities = new List<Operation.EntityRelationship>();
             var unused = string.Empty;
+            
             foreach (var currentEvent in discoveryEvents.Embedded.Events)
             {
-                var result = await GetEventDetails(currentEvent.Id);
+                var @event = await GetEventDetails(currentEvent.Id);
                 try
                 {
-                    unused = result?.Id;
-                    var record = new Event(result, result?.Embedded.Venues);
-                    json = await _jsonSerializer.SerializeAsync(record);
-                    var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-                    response = await orionClient.PostAsync(string.Empty, httpContent);
-                    response.EnsureSuccessStatusCode();
-                    events.Add(result);
+                    unused = @event?.Id;
+                    var record = new Event(@event, @event?.Embedded.Venues);
+
+                    if (!await PostEntity("Entities", record)) continue;
+                    
+                    events.Add(@event);
+                    //On fait le lien event-venue
+                    @event?.Embedded?.Venues?.ForEach(venue =>
+                    {
+                        var operationEntity = new Operation
+                            .EntityRelationship(@event.Id, venue.Id);
+                        relationshipEntities.Add(operationEntity);
+                    });
                 }
+                
+                
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-                    _logger.LogWarning($"Get Event ID: {unused} failed.", e);
+                    _logger.LogWarning($"Get Event details ID: {unused} failed.", e);
                     continue;
                 }
             }
 
-
+            if (relationshipEntities is not {Count: 0})
+            {
+                var updateOperation = new UpdateOperation(relationshipEntities);
+                await PostEntity("Entities-Relationship", updateOperation);
+            }
+            
         }
         catch (Exception e)
         {
@@ -83,6 +92,25 @@ public class EventsWatcher : IHostedService, IDisposable
         
         _logger.LogInformation(
             "Timed Hosted Service is working. Count: {Count}", count);
+    }
+
+    private async Task<bool> PostEntity(string pool, object entity)
+    {
+        var result = false;
+        try
+        {
+            var client = _httpClient.CreateClient(pool);
+            var response = await client.PostAsJsonAsync(string.Empty, entity);
+            response.EnsureSuccessStatusCode();
+            result = true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+        return result;
     }
 
     public Task StopAsync(CancellationToken stoppingToken)
