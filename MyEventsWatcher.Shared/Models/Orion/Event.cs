@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 using System.Text.Json.Serialization;
-using MyNamespace;
 
 namespace MyEventsWatcher.Shared.Models.Orion;
 

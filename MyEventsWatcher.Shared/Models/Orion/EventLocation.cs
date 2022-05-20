@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using MyEventsWatcher.Shared.Models;
 using MyEventsWatcher.Shared.Models.Orion;
 
 namespace MyEventsWatcher.Api.Models.Orion;

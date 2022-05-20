@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.WebView.Maui;
-
-namespace MyEventsWatcher;
+﻿namespace MyEventsWatcher;
 
 public static class MauiProgram
 {

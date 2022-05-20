@@ -1,7 +1,5 @@
 // Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
 
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace MyNamespace;
 
 using System.Text.Json.Serialization;

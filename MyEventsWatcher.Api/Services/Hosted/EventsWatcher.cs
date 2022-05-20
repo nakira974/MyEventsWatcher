@@ -1,9 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json.Serialization;
 using MyEventsWatcher.Api.Models.Orion;
 using MyEventsWatcher.Shared;
 using MyEventsWatcher.Shared.Models;

@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using MyEventsWatcher.Api.Models.Orion;
-using MyEventsWatcher.Services;
 using MyEventsWatcher.Shared;
-using MyEventsWatcher.Shared.Models;
 using MyEventsWatcher.Shared.Models.Orion;
 
 namespace MyEventsWatcher.Api.Controllers;
