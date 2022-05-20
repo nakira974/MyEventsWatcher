@@ -15,6 +15,7 @@ namespace MyEventsWatcher.Api.Services.Hosted;
 /// </summary>
 public class EventsWatcher : IHostedService, IDisposable
 {
+    
     private int _executionCount = 0;
     private readonly ILogger<EventsWatcher> _logger;
     private readonly IHttpClientFactory _httpClient;
@@ -80,7 +81,7 @@ public class EventsWatcher : IHostedService, IDisposable
                     
                     // ReSharper disable once AsyncVoidLambda
                     //On fait le lien event-venue
-                    venues?.ForEach(async venue =>
+                    venues?.ForEach(venue =>
                     {
                         if (@event is not null)
                         {
@@ -153,7 +154,7 @@ public class EventsWatcher : IHostedService, IDisposable
                 {
                     Value = new EventCoordinates()
                     {
-                        Coordinates = new List<float>(2)
+                        Coordinates = new List<float?>(2)
                         {
                             float.Parse(venue?.Location?.Latitude ?? "0.0", CultureInfo.InvariantCulture),
                             float.Parse(venue?.Location?.Longitude ?? "0.0", CultureInfo.InvariantCulture)
@@ -200,6 +201,7 @@ public class EventsWatcher : IHostedService, IDisposable
     /// </summary>
     /// <param name="pool"></param>
     /// <param name="entity"></param>
+    /// <param name="args"></param>
     /// <returns></returns>
     private async Task<bool> PostEntity(string pool, object entity, string args = "")
     {

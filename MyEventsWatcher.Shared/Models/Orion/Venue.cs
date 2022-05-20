@@ -11,7 +11,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
         public string Type => "string";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
     public record Aliases
@@ -26,7 +26,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
         public string Type => "string";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
     public record EventCity
@@ -35,7 +35,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
         public string Type => "string";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
     public record EventCountry
@@ -44,13 +44,13 @@ namespace MyEventsWatcher.Shared.Models.Orion
         public string Type => "string";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
     public record EventGeneralInfo
     {
         [JsonPropertyName("value")]
-        public VenueValue VenueValue { get; set; }
+        public VenueValue? VenueValue { get; set; }
     }
 
     public record EventCoordinates
@@ -59,7 +59,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
         public string Type => "Point";
 
         [JsonPropertyName("coordinates")]
-        public List<float> Coordinates { get; set; }
+        public List<float?>? Coordinates { get; set; }
     }
 
     public record GeneralRule
@@ -68,7 +68,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
         public string Type => "string";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
     public record VenueLocation
@@ -77,7 +77,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
         public string Type => "geo:json";
 
         [JsonPropertyName("value")]
-        public EventCoordinates Value { get; set; }
+        public EventCoordinates? Value { get; set; }
     }
 
     public record VenueName
@@ -86,7 +86,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
         public string Type => "string";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
     public record EventParkingDetail
@@ -95,7 +95,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
         public string Type => "string";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
     public record EventVenues
@@ -110,50 +110,50 @@ namespace MyEventsWatcher.Shared.Models.Orion
         public string Type => "string";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
     public record VenueValue
     {
-        [NotMapped] public string _id { get; set; }
+        [NotMapped] public string? _id { get; set; }
         [JsonPropertyName("id")] public string Id => $"urn:ngsi-ld:Venue:{_id}";
         [JsonPropertyName("type")] public string Type => $"Venue";
 
         [JsonPropertyName("aliases")]
-        public Aliases Aliases { get; set; }
+        public Aliases? Aliases { get; set; }
 
         [JsonPropertyName("city")]
-        public EventCity City { get; set; }
+        public EventCity? City { get; set; }
 
         [JsonPropertyName("accepted_payment")]
-        public AcceptedPayment AcceptedPayment { get; set; }
+        public AcceptedPayment? AcceptedPayment { get; set; }
 
         [JsonPropertyName("country")]
-        public EventCountry Country { get; set; }
+        public EventCountry? Country { get; set; }
 
         [JsonPropertyName("location")]
-        public VenueLocation Location { get; set; }
+        public VenueLocation? Location { get; set; }
 
         [JsonPropertyName("url")]
-        public VenueUrl Url { get; set; }
+        public VenueUrl? Url { get; set; }
 
         [JsonPropertyName("parking_detail")]
-        public EventParkingDetail ParkingDetail { get; set; }
+        public EventParkingDetail? ParkingDetail { get; set; }
 
         [JsonPropertyName("name")]
-        public VenueName Name { get; set; }
+        public VenueName? Name { get; set; }
 
         [JsonPropertyName("children_rule")]
-        public ChildrenRule ChildrenRule { get; set; }
+        public ChildrenRule? ChildrenRule { get; set; }
 
         [JsonPropertyName("general_rule")]
-        public GeneralRule GeneralRule { get; set; }
+        public GeneralRule? GeneralRule { get; set; }
         
         [JsonPropertyName("address")]
-        public EventAddress Address { get; set; }
+        public EventAddress? Address { get; set; }
         
         [JsonPropertyName("twitter")]
-        public EventTwitter Twitter { get; set; }
+        public EventTwitter? Twitter { get; set; }
     }
 
   
@@ -164,7 +164,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
         public string Type => "Text";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
     
     public record EventTwitter
@@ -173,7 +173,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
         public string Type => "Text";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
 

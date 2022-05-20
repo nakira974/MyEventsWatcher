@@ -12,13 +12,13 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         public string Type => "Text";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
     public record Dates
     {
         [JsonPropertyName("value")] 
-        public EventValue EventValue { get; set; }
+        public EventValue? EventValue { get; set; }
     }
 
     public record DateTBA
@@ -27,16 +27,16 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         public string Type => "boolean";
 
         [JsonPropertyName("value")]
-        public bool Value { get; set; }
+        public bool? Value { get; set; }
     }
 
     public record DateTBD
     {
         [JsonPropertyName("type")]
-        public  string Type => "boolean";
+        public string Type => "boolean";
 
         [JsonPropertyName("value")]
-        public bool Value { get; set; }
+        public bool? Value { get; set; }
     }
 
     public record DateTime
@@ -45,7 +45,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         public  string Type => "DateTime";
 
         [JsonPropertyName("value")]
-        public System.DateTime Value { get; set; }
+        public System.DateTime? Value { get; set; }
     }
 
     public record EndDateTime
@@ -54,7 +54,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         public  string Type => "DateTime";
 
         [JsonPropertyName("value")]
-        public System.DateTime Value { get; set; }
+        public System.DateTime? Value { get; set; }
     }
 
  
@@ -65,7 +65,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         public  string Type => "Text";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
     public record Locale
@@ -74,7 +74,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         public  string Type => "Text";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
     public record Name
@@ -83,7 +83,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         public  string Type => "Text";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
     public record NoSpecificTime
@@ -92,22 +92,22 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         public  string Type => "boolean";
 
         [JsonPropertyName("value")]
-        public bool Value { get; set; }
+        public bool? Value { get; set; }
     }
 
     public record Public
     {
         [JsonPropertyName("startDateTime")]
-        public StartDateTime StartDateTime { get; set; }
+        public StartDateTime? StartDateTime { get; set; }
 
         [JsonPropertyName("startTBD")]
-        public StartTBD StartTBD { get; set; }
+        public StartTBD? StartTBD { get; set; }
 
         [JsonPropertyName("startTBA")]
-        public StartTBA StartTBA { get; set; }
+        public StartTBA? StartTBA { get; set; }
 
         [JsonPropertyName("endDateTime")]
-        public EndDateTime EndDateTime { get; set; }
+        public EndDateTime? EndDateTime { get; set; }
     }
 
 /// <summary>
@@ -126,32 +126,32 @@ namespace MyEventsWatcher.Shared.Models.Orion;
             {
                   Name = new Name()
             {
-                Value = currentEvent.Name
+                Value = currentEvent?.Name ?? string.Empty
             };
 
             EventIdentifier = new EventId()
             {
-                Value = currentEvent.Id
+                Value = currentEvent?.Id ?? string.Empty
             };
 
             Info = new Info()
             {
-                Value = currentEvent.Info
+                Value = currentEvent?.Info ?? string.Empty 
             };
 
             Test = new Test()
             {
-                Value = currentEvent.Test
+                Value = currentEvent?.Test ?? false
             };
 
             Url = new Url()
             {
-                Value = currentEvent.Url
+                Value = currentEvent?.Url ?? string.Empty
             };
 
             Locale = new Locale()
             {
-                Value = currentEvent.Locale
+                Value = currentEvent?.Locale ?? string.Empty
             };
 
             Sales = new Sales()
@@ -162,19 +162,19 @@ namespace MyEventsWatcher.Shared.Models.Orion;
                     {
                         EndDateTime = new EndDateTime()
                         {
-                            Value = currentEvent.Sales.Public.EndDateTime
+                            Value = currentEvent?.Sales.Public.EndDateTime ?? System.DateTime.Now
                         },
                         StartDateTime = new StartDateTime()
                         {
-                            Value = currentEvent.Sales.Public.StartDateTime
+                            Value = currentEvent?.Sales.Public.StartDateTime ?? System.DateTime.Now
                         },
                         StartTBA = new StartTBA()
                         {
-                            Value = currentEvent.Sales.Public.StartTBA
+                            Value = currentEvent?.Sales.Public.StartTBA ?? false
                         },
                         StartTBD = new StartTBD()
                         {
-                            Value = currentEvent.Sales.Public.StartTBD
+                            Value = currentEvent?.Sales.Public.StartTBD ?? false
                         }
                         
                     }
@@ -189,63 +189,60 @@ namespace MyEventsWatcher.Shared.Models.Orion;
                     {
                         DateTime = new DateTime()
                         {
-                            Value = currentEvent.Dates.Start.DateTime
+                            Value = currentEvent?.Dates.Start.DateTime ?? System.DateTime.Now
                         },
                         NoSpecificTime = new NoSpecificTime()
                         {
-                            Value = currentEvent.Dates.Start.NoSpecificTime
+                            Value = currentEvent?.Dates.Start.NoSpecificTime ?? false
                         },
                         DateTBA = new DateTBA()
                         {
-                            Value = currentEvent.Dates.Start.DateTBA
+                            Value = currentEvent?.Dates.Start.DateTBA ?? false
                         },
                         DateTBD = new DateTBD()
                         {
-                            Value = currentEvent.Dates.Start.DateTBD
+                            Value = currentEvent?.Dates.Start.DateTBD ?? false
                         },
                         TimeTBA = new TimeTBA()
                         {
-                            Value = currentEvent.Dates.Start.TimeTBA
+                            Value = currentEvent?.Dates.Start.TimeTBA ?? false
                         }
                     }
                 }
             };
 
+            if (currentEvent is null) return;
             Classifications = new EventClassifications()
             {
                 Classifications = new List<EventClassification>(currentEvent.Classifications.Count)
             };
-            
+
             Venues = new EventVenues()
             {
                 Value = new List<VenueValue>()
             };
-            
-            foreach (var currentEventClassification in currentEvent.Classifications)
+
+            foreach (var classification in currentEvent.Classifications.Select(currentEventClassification => new EventClassification()
+                     {
+                         Details = new EventClassification.Value()
+                         {
+                             Type = new EventClassification.Value.EventType()
+                             {
+                                 Value = currentEventClassification?.Type?.Name ?? string.Empty
+                             },
+                             EventGenre = new EventClassification.Value.Genre()
+                             {
+                                 Value = currentEventClassification?.Genre?.Name ?? string.Empty
+                             },
+                             EventSegment = new EventClassification.Value.Segment()
+                             {
+                                 Value = currentEventClassification?.Segment?.Name ?? string.Empty
+                             }
+                         }
+                     }))
             {
-                var classification = new EventClassification()
-                {
-                    Details = new EventClassification.Value()
-                    {
-                        Type = new EventClassification.Value.EventType()
-                        {
-                            Value = currentEventClassification?.Type?.Name ?? string.Empty
-                        },
-                        EventGenre = new EventClassification.Value.Genre()
-                        {
-                            Value = currentEventClassification?.Genre?.Name ?? string.Empty
-                        },
-                        EventSegment = new EventClassification.Value.Segment()
-                        {
-                            Value = currentEventClassification?.Segment?.Name ?? string.Empty
-                        }
-                    }
-                };
                 Classifications.Classifications.Add(classification);
             }
-            
-            
-            
             }
             catch (Exception e)
             {
@@ -262,34 +259,34 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         public string Type => "Event";
 
         [JsonPropertyName("name")]
-        public Name Name { get; set; }
+        public Name? Name { get; set; }
 
         [JsonPropertyName("event_code")]
-        public EventId EventIdentifier { get; set; }
+        public EventId? EventIdentifier { get; set; }
 
         [JsonPropertyName("info")]
-        public Info Info { get; set; }
+        public Info? Info { get; set; }
 
         [JsonPropertyName("test")]
-        public Test Test { get; set; }
+        public Test? Test { get; set; }
 
         [JsonPropertyName("url")]
-        public Url Url { get; set; }
+        public Url? Url { get; set; }
 
         [JsonPropertyName("locale")]
-        public Locale Locale { get; set; }
+        public Locale? Locale { get; set; }
 
         [JsonPropertyName("sales")]
-        public Sales Sales { get; set; }
+        public Sales? Sales { get; set; }
 
         [JsonPropertyName("dates")]
-        public Dates Dates { get; set; }
+        public Dates? Dates { get; set; }
         
         [JsonPropertyName("classfications")]
-        public EventClassifications Classifications { get; set; }
+        public EventClassifications? Classifications { get; set; }
         
         [JsonPropertyName("venues")]
-        public EventVenues Venues { get; set; }
+        public EventVenues? Venues { get; set; }
     }
 
 
@@ -317,7 +314,7 @@ public record EventClassifications
 public record EventClassification
 {
     [JsonPropertyName("value")]
-    public Value Details { get; set; }
+    public Value? Details { get; set; }
 
     public record Value
     {
@@ -327,7 +324,7 @@ public record EventClassification
             public string Type => "Text";
 
             [JsonPropertyName("value")]
-            public string Value { get; set; }
+            public string? Value { get; set; }
         }
         
         public record Segment
@@ -336,7 +333,7 @@ public record EventClassification
             public string Type => "Text";
 
             [JsonPropertyName("value")]
-            public string Value { get; set; }
+            public string? Value { get; set; }
         }
         
         public record EventType
@@ -345,7 +342,7 @@ public record EventClassification
             public string Type => "Text";
 
             [JsonPropertyName("value")]
-            public string Value { get; set; }
+            public string? Value { get; set; }
         }
         
         [JsonPropertyName("genre")]
@@ -363,19 +360,19 @@ public record EventClassification
     public record Start
     {
         [JsonPropertyName("dateTime")]
-        public DateTime DateTime { get; set; }
+        public DateTime? DateTime { get; set; }
 
         [JsonPropertyName("dateTBD")]
-        public DateTBD DateTBD { get; set; }
+        public DateTBD? DateTBD { get; set; }
 
         [JsonPropertyName("dateTBA")]
-        public DateTBA DateTBA { get; set; }
+        public DateTBA? DateTBA { get; set; }
 
         [JsonPropertyName("timeTBA")]
-        public TimeTBA TimeTBA { get; set; }
+        public TimeTBA? TimeTBA { get; set; }
 
         [JsonPropertyName("noSpecificTime")]
-        public NoSpecificTime NoSpecificTime { get; set; }
+        public NoSpecificTime? NoSpecificTime { get; set; }
     }
 
     public record StartDateTime
@@ -384,7 +381,7 @@ public record EventClassification
         public  string Type => "DateTime";
 
         [JsonPropertyName("value")]
-        public System.DateTime Value { get; set; }
+        public System.DateTime? Value { get; set; }
     }
 
     public record StartTBA
@@ -393,7 +390,7 @@ public record EventClassification
         public  string Type => "boolean";
 
         [JsonPropertyName("value")]
-        public bool Value { get; set; }
+        public bool? Value { get; set; }
     }
 
     public record StartTBD
@@ -402,13 +399,13 @@ public record EventClassification
         public  string Type => "boolean";
 
         [JsonPropertyName("value")]
-        public bool Value { get; set; }
+        public bool? Value { get; set; }
     }
 
     public record Status
     {
         [JsonPropertyName("code")]
-        public Code Code { get; set; }
+        public Code? Code { get; set; }
     }
 
     public record Test
@@ -417,7 +414,7 @@ public record EventClassification
         public  string Type => "boolean";
 
         [JsonPropertyName("value")]
-        public bool Value { get; set; }
+        public bool? Value { get; set; }
     }
 
     public record TimeTBA
@@ -426,16 +423,16 @@ public record EventClassification
         public  string Type => "boolean";
 
         [JsonPropertyName("value")]
-        public bool Value { get; set; }
+        public bool? Value { get; set; }
     }
 
     public record Timezone
     {
         [JsonPropertyName("type")]
-        public  string Type => "boolean";
+        public string Type => "boolean";
 
         [JsonPropertyName("value")]
-        public bool Value { get; set; }
+        public bool? Value { get; set; }
     }
 
     public record Url
@@ -444,7 +441,7 @@ public record EventClassification
         public  string Type => "Text";
 
         [JsonPropertyName("value")]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
 public record EventId
@@ -453,43 +450,43 @@ public record EventId
     public string Type => "Text";
 
     [JsonPropertyName("value")]
-    public string Value { get; set; }
+    public string? Value { get; set; }
 }
 
 public class EventValue
 {
     [JsonPropertyName("public")]
-    public Public Public { get; set; }
+    public Public? Public { get; set; }
 
     [JsonPropertyName("startDateTime")]
-    public StartDateTime StartDateTime { get; set; }
+    public StartDateTime? StartDateTime { get; set; }
 
     [JsonPropertyName("startTBD")]
-    public StartTBD StartTBD { get; set; }
+    public StartTBD? StartTBD { get; set; }
 
     [JsonPropertyName("startTBA")]
-    public StartTBA StartTBA { get; set; }
+    public StartTBA? StartTBA { get; set; }
 
     [JsonPropertyName("endDateTime")]
-    public EndDateTime EndDateTime { get; set; }
+    public EndDateTime? EndDateTime { get; set; }
 
     [JsonPropertyName("start")]
-    public Start Start { get; set; }
+    public Start? Start { get; set; }
 
     [JsonPropertyName("dateTime")]
-    public DateTime DateTime { get; set; }
+    public DateTime? DateTime { get; set; }
 
     [JsonPropertyName("dateTBD")]
-    public DateTBD DateTBD { get; set; }
+    public DateTBD? DateTBD { get; set; }
 
     [JsonPropertyName("dateTBA")]
-    public DateTBA DateTBA { get; set; }
+    public DateTBA? DateTBA { get; set; }
 
     [JsonPropertyName("timeTBA")]
-    public TimeTBA TimeTBA { get; set; }
+    public TimeTBA? TimeTBA { get; set; }
 
     [JsonPropertyName("noSpecificTime")]
-    public NoSpecificTime NoSpecificTime { get; set; }
+    public NoSpecificTime? NoSpecificTime { get; set; }
 }
 
 
