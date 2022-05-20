@@ -4,9 +4,6 @@ using MyEventsWatcher.Services;
 
 namespace MyEventsWatcher.Shared.Models.Orion;
 
-public record UserName : OrionEntityAttribute<UserName>{}
-public record Password : OrionEntityAttribute<Password> {}
-
 public record Location : OrionEntityValue<Location>
 {
     public new float[]? Value { get; set; }
@@ -33,13 +30,3 @@ public record UserSubscription
     [Required]
     public IEnumerable<string>? Subscriptions { get; set; }
  };
-
-public record User
-{
-    public UserName? Username { get; set; }
-
-    public Password? Password { get; set; }
-
-    public Location? Location { get; set; }
-
-}

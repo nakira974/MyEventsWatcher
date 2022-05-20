@@ -3,12 +3,8 @@ using System.Text.Json.Serialization;
 
 namespace MyEventsWatcher.Services;
 
-public abstract record OrionEntityAttribute<T>
+public abstract record OrionEntityValue<T>
 {
-    [JsonPropertyName("type")]
-    [Required]
-    public string? Type { get; set; }
-    
     [JsonPropertyName("value")]
     [Required]
     public object? Value { get; set; }
