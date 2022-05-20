@@ -13,11 +13,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MyEventsWatcher.Shared\MyEventsWatcher.Shared.csproj" />
+      <Folder Include="Data" />
+      <Folder Include="Models\RemoteData" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Data" />
+      <ProjectReference Include="..\MyEventsWatcher.Shared\MyEventsWatcher.Shared.csproj" />
     </ItemGroup>
 
 </Project>

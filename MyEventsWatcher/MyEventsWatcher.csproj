@@ -17,7 +17,7 @@
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.myeventswatcher</ApplicationId>
-		<ApplicationIdGuid>51589081-BF01-4E96-9FBB-9788CC1AE84D</ApplicationIdGuid>
+		<ApplicationIdGuid>2761341E-B6E0-42E7-B7D4-A1A86D1A9526</ApplicationIdGuid>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -50,48 +50,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Radzen.Blazor" Version="3.18.8" />
+	  <PackageReference Include="Radzen.Blazor" Version="3.18.9" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\MyEventsWatcher.Shared\MyEventsWatcher.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Data\" />
 	  <Folder Include="Models\" />
-	  <Folder Include="MyEventsWatcher.Api\Models\Application" />
-	  <Folder Include="Services" />
-	  <Folder Include="Services\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="MyEventsWatcher.Api\Program.cs">
-	    <Link>MyEventsWatcherApi\Program.cs</Link>
-	  </Compile>
-	  <Compile Update="MyEventsWatcher.Api\Controllers\WeatherForecastController.cs">
-	    <Link>MyEventsWatcherApi\Controllers\WeatherForecastController.cs</Link>
-	  </Compile>
-	  <Compile Update="MyEventsWatcher.Api\WeatherForecast.cs">
-	    <Link>MyEventsWatcherApi\WeatherForecast.cs</Link>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Update="MyEventsWatcher.Api\Properties\launchSettings.json">
-	    <Link>MyEventsWatcherApi\Properties\launchSettings.json</Link>
-	  </Content>
-	  <Content Update="MyEventsWatcher.Api\appsettings.json">
-	    <Link>MyEventsWatcherApi\appsettings.json</Link>
-	  </Content>
-	  <Content Update="MyEventsWatcher.Api\appsettings.Development.json">
-	    <Link>MyEventsWatcherApi\appsettings.Development.json</Link>
-	  </Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="MyEventsWatcher.Api\Dockerfile">
-	    <Link>MyEventsWatcherApi\Dockerfile</Link>
-	  </None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="MyEventsWatcher.Shared\MyEventsWatcher.Shared.csproj" />
 	</ItemGroup>
 
 </Project>

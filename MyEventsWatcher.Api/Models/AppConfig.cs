@@ -9,4 +9,13 @@ public class AppConfig
     
     [JsonPropertyName("subscriptions")]
     public string? SubscriptionsUrl { get; set; }
+    
+    [JsonPropertyName("events")]
+    public string? EventsUrl { get; set; }
+    
+    [JsonPropertyName("venues")]
+    public string? Venues { get; set; }
+    
+    [JsonPropertyName("discoveryBaseUri")]
+    public string? DiscoveryBaseUri { get; set; }
 }

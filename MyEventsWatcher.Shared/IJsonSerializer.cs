@@ -1,4 +1,4 @@
-﻿namespace MyEventsWatcher.Services;
+﻿namespace MyEventsWatcher.Shared;
 
 public interface IJsonSerializer : ISerializer<IJsonSerializer>
 {

@@ -1,7 +1,8 @@
 using System.Collections.Immutable;
 using System.Text;
 
-namespace MyEventsWatcher.Services;
+namespace MyEventsWatcher.Shared;
+
 
 public class JsonSerializer : IJsonSerializer
 {

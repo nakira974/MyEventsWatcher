@@ -1,5 +1,7 @@
 #pragma warning disable CS0693
-namespace MyEventsWatcher.Services;
+
+namespace MyEventsWatcher.Shared;
+
 
 /// <summary>
 /// Base contract to create serialization operations on a target format.

@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components.WebView.Maui;
-using MyEventsWatcher.Data;
-using MyEventsWatcher.Services;
 
 namespace MyEventsWatcher;
 
@@ -21,8 +19,6 @@ public static class MauiProgram
 		builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
 
-		builder.Services.AddSingleton<WeatherForecastService>();
-        builder.Services.AddSingleton<IJsonSerializer, JsonSerializer>();
 		return builder.Build();
 	}
 }

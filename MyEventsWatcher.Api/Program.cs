@@ -4,8 +4,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using MyEventsWatcher.Api.Models;
 using MyEventsWatcher.Api.Services.Hosted;
-using MyEventsWatcher.Services;
-using JsonSerializer = MyEventsWatcher.Services.JsonSerializer;
+using MyEventsWatcher.Shared;
+using JsonSerializer = MyEventsWatcher.Shared.JsonSerializer;
 
 //Create builder.
 #region Builder
@@ -44,10 +44,20 @@ services.AddDbContext<ApplicationDbContext>(
 
 //Configure access to Orion.
 #region OrionHttpClients
+
 builder.Services.AddHttpClient("Entities",
     client =>
     {
         client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:entities")
+            .Get<string>());
+        client.DefaultRequestHeaders.Add("User-Agent", "MyEventsWatcher-Api");
+        
+    });
+
+builder.Services.AddHttpClient("DiscoveryApi",
+    client =>
+    {
+        client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:discoveryBaseUri")
             .Get<string>());
         client.DefaultRequestHeaders.Add("User-Agent", "MyEventsWatcher-Api");
     }).ConfigurePrimaryHttpMessageHandler(() =>
@@ -61,6 +71,43 @@ builder.Services.AddHttpClient("Entities",
         ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
     };
 }).SetHandlerLifetime(TimeSpan.FromMinutes(30));
+
+builder.Services.AddHttpClient("Events",
+    client =>
+    {
+        client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:events")
+            .Get<string>());
+        client.DefaultRequestHeaders.Add("User-Agent", "MyEventsWatcher-Api");
+    }).ConfigurePrimaryHttpMessageHandler(() =>
+{
+    //Handler pour encapsuler l'authentification NTLM avec les credentials de l'utilisateur windows
+    return new HttpClientHandler
+    {
+        UseDefaultCredentials = false,
+        AllowAutoRedirect = true,
+        //Pour la future prise en charge de ssl, sert � n�gocier le handshake avec le serveur pour les requ�tes
+        ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+    };
+}).SetHandlerLifetime(TimeSpan.FromMinutes(30));
+
+builder.Services.AddHttpClient("Venues",
+    client =>
+    {
+        client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:venues")
+            .Get<string>());
+        client.DefaultRequestHeaders.Add("User-Agent", "MyEventsWatcher-Api");
+    }).ConfigurePrimaryHttpMessageHandler(() =>
+{
+    //Handler pour encapsuler l'authentification NTLM avec les credentials de l'utilisateur windows
+    return new HttpClientHandler
+    {
+        UseDefaultCredentials = false,
+        AllowAutoRedirect = true,
+        //Pour la future prise en charge de ssl, sert � n�gocier le handshake avec le serveur pour les requ�tes
+        ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+    };
+}).SetHandlerLifetime(TimeSpan.FromMinutes(30));
+
 
 builder.Services.AddHttpClient("Subscriptions",
     client =>

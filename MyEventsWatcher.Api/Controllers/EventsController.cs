@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using MyEventsWatcher.Api.Models.Orion;
 using MyEventsWatcher.Services;
+using MyEventsWatcher.Shared;
 using MyEventsWatcher.Shared.Models;
+using MyEventsWatcher.Shared.Models.Orion;
 
 namespace MyEventsWatcher.Api.Controllers;
 
@@ -57,7 +59,7 @@ public class EventsController : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status204NoContent)]
     [Route("Subscribe")]
-    public async Task<IActionResult> Subscribe([FromHeader]UserSubscription userSubscription,  [FromBody] IEnumerable<Event> events)
+    public async Task<IActionResult> Subscribe([FromHeader]UserSubscription userSubscription, IEnumerable<Event> events)
     {
         var subscriptionsDone = new List<Event>(); 
         IActionResult result = StatusCode(204, subscriptionsDone);
