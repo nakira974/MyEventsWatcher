@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using MyEventsWatcher.Api.Models;
 using MyEventsWatcher.Api.Services.Hosted;
 using MyEventsWatcher.Shared;
@@ -10,12 +11,25 @@ using JsonSerializer = MyEventsWatcher.Shared.JsonSerializer;
 //Create builder.
 #region Builder
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseKestrel(options =>
+{
+    options.AllowSynchronousIO = true;
+});
+builder.WebHost.UseQuic(options =>
+{
+    options.Backlog = 64;
+    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.MaxWriteBufferSize = 2048;
+    options.MaxReadBufferSize = 4096;
+    options.MaxUnidirectionalStreamCount = 2;
+    options.MaxBidirectionalStreamCount = 2;
+});
 #endregion
 
 
 // Add services to the container.
 #region Services
-builder.Services.AddHostedService<EventsWatcher>();
+//builder.Services.AddHostedService<EventsWatcher>();
 builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppConfig"));
 builder.Services.AddTransient<IJsonSerializer, JsonSerializer>();
 #endregion
