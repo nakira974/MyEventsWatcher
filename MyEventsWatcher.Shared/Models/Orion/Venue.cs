@@ -1,5 +1,6 @@
 // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
 
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace MyEventsWatcher.Shared.Models.Orion
@@ -7,7 +8,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
     public record AcceptedPayment
     {
         [JsonPropertyName("type")]
-        public string Type { get => "string";}
+        public string Type => "string";
 
         [JsonPropertyName("value")]
         public string Value { get; set; }
@@ -22,7 +23,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
     public record ChildrenRule
     {
         [JsonPropertyName("type")]
-        public string Type { get => "string";}
+        public string Type => "string";
 
         [JsonPropertyName("value")]
         public string Value { get; set; }
@@ -31,7 +32,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
     public record EventCity
     {
         [JsonPropertyName("type")]
-        public string Type { get => "string";}
+        public string Type => "string";
 
         [JsonPropertyName("value")]
         public string Value { get; set; }
@@ -40,7 +41,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
     public record EventCountry
     {
         [JsonPropertyName("type")]
-        public string Type { get => "string";}
+        public string Type => "string";
 
         [JsonPropertyName("value")]
         public string Value { get; set; }
@@ -55,8 +56,8 @@ namespace MyEventsWatcher.Shared.Models.Orion
     public record EventCoordinates
     {
         [JsonPropertyName("type")]
-        public string Type { get => "Point"; }
-        
+        public string Type => "Point";
+
         [JsonPropertyName("coordinates")]
         public List<float> Coordinates { get; set; }
     }
@@ -64,8 +65,8 @@ namespace MyEventsWatcher.Shared.Models.Orion
     public record GeneralRule
     {
         [JsonPropertyName("type")]
-        public string Type { get => "string";}
-        
+        public string Type => "string";
+
         [JsonPropertyName("value")]
         public string Value { get; set; }
     }
@@ -73,7 +74,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
     public record VenueLocation
     {
         [JsonPropertyName("type")]
-        public string Type { get => "geo:json";}
+        public string Type => "geo:json";
 
         [JsonPropertyName("value")]
         public EventCoordinates Value { get; set; }
@@ -82,7 +83,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
     public record VenueName
     {
         [JsonPropertyName("type")]
-        public string Type { get => "string";}
+        public string Type => "string";
 
         [JsonPropertyName("value")]
         public string Value { get; set; }
@@ -91,7 +92,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
     public record EventParkingDetail
     {
         [JsonPropertyName("type")]
-        public string Type { get => "string";}
+        public string Type => "string";
 
         [JsonPropertyName("value")]
         public string Value { get; set; }
@@ -106,7 +107,7 @@ namespace MyEventsWatcher.Shared.Models.Orion
     public record VenueUrl
     {
         [JsonPropertyName("type")]
-        public string Type { get => "string";}
+        public string Type => "string";
 
         [JsonPropertyName("value")]
         public string Value { get; set; }
@@ -114,6 +115,10 @@ namespace MyEventsWatcher.Shared.Models.Orion
 
     public record VenueValue
     {
+        [NotMapped] public string _id { get; set; }
+        [JsonPropertyName("id")] public string Id => $"urn:ngsi-ld:Venue:{_id}";
+        [JsonPropertyName("type")] public string Type => $"Venue";
+
         [JsonPropertyName("aliases")]
         public Aliases Aliases { get; set; }
 
@@ -156,8 +161,8 @@ namespace MyEventsWatcher.Shared.Models.Orion
     public record EventAddress
     {
         [JsonPropertyName("type")]
-        public string Type { get => "Text"; }
-        
+        public string Type => "Text";
+
         [JsonPropertyName("value")]
         public string Value { get; set; }
     }
@@ -165,8 +170,8 @@ namespace MyEventsWatcher.Shared.Models.Orion
     public record EventTwitter
     {
         [JsonPropertyName("type")]
-        public string Type { get => "Text"; }
-        
+        public string Type => "Text";
+
         [JsonPropertyName("value")]
         public string Value { get; set; }
     }

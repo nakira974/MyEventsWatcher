@@ -18,7 +18,7 @@ public abstract class Operation
         public string Destination { get; set; }
 
         [JsonPropertyName("type")]
-        public string Type { get =>"Shelf"; }
+        public string Type => "Shelf";
 
         [JsonPropertyName("refStore")]
         public RefStore RefStore { get; set; }
@@ -32,8 +32,8 @@ public abstract class Operation
         }
 
         [JsonPropertyName("type")]
-        public string Type { get =>"Relationship"; }
-        
+        public string Type => "Relationship";
+
         [Required]
         [JsonPropertyName("value")]
         public string Source { get; set; }

@@ -11,7 +11,7 @@ public class UpdateOperation : Operation
         Entities = entities.ToList();
     }
     [JsonPropertyName("actionType")]
-    public string ActionType { get =>"APPEND";}
+    public string ActionType => "APPEND";
 
     [JsonPropertyName("entities")]
     public List<EntityRelationship> Entities { get; set; }

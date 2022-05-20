@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Text.Json.Serialization;
 using MyNamespace;
@@ -10,7 +11,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
     public record Code
     {
         [JsonPropertyName("type")]
-        public string Type  {get => "Text";}
+        public string Type => "Text";
 
         [JsonPropertyName("value")]
         public string Value { get; set; }
@@ -25,7 +26,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
     public record DateTBA
     {
         [JsonPropertyName("type")]
-        public string Type {get => "boolean";}
+        public string Type => "boolean";
 
         [JsonPropertyName("value")]
         public bool Value { get; set; }
@@ -34,7 +35,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
     public record DateTBD
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "boolean";}
+        public  string Type => "boolean";
 
         [JsonPropertyName("value")]
         public bool Value { get; set; }
@@ -43,7 +44,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
     public record DateTime
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "DateTime";}
+        public  string Type => "DateTime";
 
         [JsonPropertyName("value")]
         public System.DateTime Value { get; set; }
@@ -52,7 +53,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
     public record EndDateTime
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "DateTime";}
+        public  string Type => "DateTime";
 
         [JsonPropertyName("value")]
         public System.DateTime Value { get; set; }
@@ -63,7 +64,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
     public record Info
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "Text";}
+        public  string Type => "Text";
 
         [JsonPropertyName("value")]
         public string Value { get; set; }
@@ -72,7 +73,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
     public record Locale
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "Text";}
+        public  string Type => "Text";
 
         [JsonPropertyName("value")]
         public string Value { get; set; }
@@ -81,7 +82,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
     public record Name
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "Text";}
+        public  string Type => "Text";
 
         [JsonPropertyName("value")]
         public string Value { get; set; }
@@ -90,7 +91,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
     public record NoSpecificTime
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "boolean";}
+        public  string Type => "boolean";
 
         [JsonPropertyName("value")]
         public bool Value { get; set; }
@@ -111,6 +112,9 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         public EndDateTime EndDateTime { get; set; }
     }
 
+/// <summary>
+/// Modèle des évènements au sein de Orion.
+/// </summary>
     public record Event
     {
         public Event()
@@ -118,7 +122,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
             
         }
         
-        public Event(DiscoveryEvent? currentEvent, IEnumerable<Venue>? venues)
+        public Event(DiscoveryEvent? currentEvent)
         {
             try
             {
@@ -242,64 +246,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
                 Classifications.Classifications.Add(classification);
             }
             
-            foreach (var venue in venues)
-            {
-                var value = new VenueValue()
-                {
-                    Aliases = new Aliases()
-                    {
-                        AlliasesValue = venue?.Aliases ?? new List<string>()
-                    },
-                    City = new EventCity()
-                    {
-                        Value = venue?.City?.Name ?? string.Empty
-                    },
-                    Country = new EventCountry()
-                    {
-                        Value = venue?.Country?.Name ?? string.Empty
-                    },
-                    Location = new VenueLocation()
-                    {
-                        Value = new EventCoordinates()
-                        {
-                            Coordinates = new List<float>(2)
-                            {
-                                float.Parse(venue?.Location?.Latitude ?? "0.0", CultureInfo.InvariantCulture),
-                                float.Parse(venue?.Location?.Longitude ?? "0.0", CultureInfo.InvariantCulture)
-                            }
-                        }
-                    },
-                    Name = new VenueName()
-                    {
-                        Value = venue?.Name ?? string.Empty 
-                    },
-                    Url = new VenueUrl()
-                    { 
-                        Value = venue?.Url ?? string.Empty
-                    },
-                    Address = new EventAddress()
-                    {
-                        Value = venue?.Address?.Line1 ?? string.Empty
-                    },
-                    Twitter = new EventTwitter()
-                    {
-                        Value = venue?.Social?.Twitter?.Handle ?? string.Empty
-                    },
-                    ChildrenRule = new ChildrenRule()
-                    {
-                        Value = venue?.GeneralInfo?.ChildRule ?? string.Empty
-                    },
-                    GeneralRule = new GeneralRule()
-                    {
-                        Value = venue?.GeneralInfo?.GeneralRule ?? string.Empty
-                    },
-                    ParkingDetail = new EventParkingDetail()
-                    {
-                        Value = venue?.ParkingDetail ?? string.Empty
-                    }
-                };
-                Venues.Value.Add(value); 
-            }
+            
             
             }
             catch (Exception e)
@@ -311,15 +258,15 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         }
         
         [JsonPropertyName("id")]
-        public string EventId {get => $"urn:ngsi-ld:Event:{Id.Value}";}
+        public string EventId => $"urn:ngsi-ld:Event:{Id.Value}";
 
         [JsonPropertyName("type")]
-        public string Type {get => "Event";}
+        public string Type => "Event";
 
         [JsonPropertyName("name")]
         public Name Name { get; set; }
 
-        [JsonPropertyName("event_code")]
+        [NotMapped]
         public EventId Id { get; set; }
 
         [JsonPropertyName("info")]
@@ -347,6 +294,8 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         public EventVenues Venues { get; set; }
     }
 
+
+
 public record EventClassifications
 {
     [JsonPropertyName("value")]
@@ -361,7 +310,7 @@ public record EventClassifications
     public record SpanMultipleDays
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "boolean";}
+        public  string Type => "boolean";
 
         [JsonPropertyName("value")]
         public bool Value { get; set; }
@@ -377,8 +326,8 @@ public record EventClassification
         public record Genre
         {
             [JsonPropertyName("type")]
-            public string Type {get=> "Text";}
-            
+            public string Type => "Text";
+
             [JsonPropertyName("value")]
             public string Value { get; set; }
         }
@@ -386,8 +335,8 @@ public record EventClassification
         public record Segment
         {
             [JsonPropertyName("type")]
-            public string Type {get=> "Text";}
-            
+            public string Type => "Text";
+
             [JsonPropertyName("value")]
             public string Value { get; set; }
         }
@@ -395,8 +344,8 @@ public record EventClassification
         public record EventType
         {
             [JsonPropertyName("type")]
-            public string Type {get=> "Text";}
-            
+            public string Type => "Text";
+
             [JsonPropertyName("value")]
             public string Value { get; set; }
         }
@@ -434,7 +383,7 @@ public record EventClassification
     public record StartDateTime
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "DateTime";}
+        public  string Type => "DateTime";
 
         [JsonPropertyName("value")]
         public System.DateTime Value { get; set; }
@@ -443,7 +392,7 @@ public record EventClassification
     public record StartTBA
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "boolean";}
+        public  string Type => "boolean";
 
         [JsonPropertyName("value")]
         public bool Value { get; set; }
@@ -452,8 +401,8 @@ public record EventClassification
     public record StartTBD
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "boolean";}
-        
+        public  string Type => "boolean";
+
         [JsonPropertyName("value")]
         public bool Value { get; set; }
     }
@@ -467,8 +416,8 @@ public record EventClassification
     public record Test
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "boolean";}
-        
+        public  string Type => "boolean";
+
         [JsonPropertyName("value")]
         public bool Value { get; set; }
     }
@@ -476,7 +425,7 @@ public record EventClassification
     public record TimeTBA
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "boolean";}
+        public  string Type => "boolean";
 
         [JsonPropertyName("value")]
         public bool Value { get; set; }
@@ -485,7 +434,7 @@ public record EventClassification
     public record Timezone
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "boolean";}
+        public  string Type => "boolean";
 
         [JsonPropertyName("value")]
         public bool Value { get; set; }
@@ -494,7 +443,7 @@ public record EventClassification
     public record Url
     {
         [JsonPropertyName("type")]
-        public  string Type {get => "Text";}
+        public  string Type => "Text";
 
         [JsonPropertyName("value")]
         public string Value { get; set; }
@@ -503,8 +452,8 @@ public record EventClassification
 public record EventId
 {
     [JsonPropertyName("type")]
-    public string Type {get => "Text";}
-    
+    public string Type => "Text";
+
     [JsonPropertyName("value")]
     public string Value { get; set; }
 }
