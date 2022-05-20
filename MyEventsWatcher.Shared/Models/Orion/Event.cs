@@ -129,7 +129,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
                 Value = currentEvent.Name
             };
 
-            Id = new EventId()
+            EventIdentifier = new EventId()
             {
                 Value = currentEvent.Id
             };
@@ -256,7 +256,7 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         }
         
         [JsonPropertyName("id")]
-        public string EventId => $"urn:ngsi-ld:Event:{Id.Value}";
+        public string EventId => $"urn:ngsi-ld:Event:{EventIdentifier.Value}";
 
         [JsonPropertyName("type")]
         public string Type => "Event";
@@ -264,8 +264,8 @@ namespace MyEventsWatcher.Shared.Models.Orion;
         [JsonPropertyName("name")]
         public Name Name { get; set; }
 
-        [NotMapped]
-        public EventId Id { get; set; }
+        [JsonPropertyName("event_code")]
+        public EventId EventIdentifier { get; set; }
 
         [JsonPropertyName("info")]
         public Info Info { get; set; }

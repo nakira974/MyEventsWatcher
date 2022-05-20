@@ -12,7 +12,8 @@ public class EventsController : ControllerBase
     private readonly ILogger<EventsController> _logger;
     private readonly IHttpClientFactory _httpClient;
     private readonly IJsonSerializer _jsonSerializer;
-    
+    private string IdPattern { get; } = "urn:ngsi-ld:Event:";
+
     public EventsController(ILogger<EventsController> logger, IHttpClientFactory httpClient, IJsonSerializer jsonSerializer)
     {
         _logger = logger;
@@ -23,8 +24,9 @@ public class EventsController : ControllerBase
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status204NoContent)]
+    [Route("[action]")]
     
-    public async Task<IActionResult> Get(float latitude, float longitude, short range)
+    public async Task<IActionResult> Search(float latitude, float longitude, short range)
     {
         IActionResult result = StatusCode(204, new List<Event>());
         var client = _httpClient.CreateClient("Entities");
@@ -52,10 +54,61 @@ public class EventsController : ControllerBase
         return result;
     }
 
+    [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> GetAll()
+    {
+        IActionResult result = StatusCode(204, new List<Event>());
+        var client = _httpClient.CreateClient("Entities");
+
+        try
+        {
+            var content = await client.GetFromJsonAsync<IEnumerable<Event?>?>("entities/?type=Event");
+            if (content is not null) result = Ok(content);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("EventsController::Get() Error :", e);
+            result = StatusCode(500, e);
+        }
+        
+        return result;
+    }
+    
+    [HttpGet]
+    [ProducesResponseType(typeof(Event), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Event), StatusCodes.Status204NoContent)]
+    [Route("[action]")]
+    public async Task<IActionResult> Get(string id)
+    {
+        var urn = id.Contains(IdPattern) ? id : IdPattern+id;
+        IActionResult result = StatusCode(204, new Event());
+        var client = _httpClient.CreateClient("Entities");
+        var uri = $"entities/{urn}";
+        try
+        {
+            var response = await client.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var content = await _jsonSerializer
+                .DeserializeAsync<Event?>(await response
+                    .Content.ReadAsStringAsync());
+            
+            if (content is not null) result = Ok(content);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("EventsController::Get() Error :", e);
+            result = StatusCode(500, e);
+        }
+        
+        return result;
+    }
+
     [HttpPost]
     [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status204NoContent)]
-    [Route("Subscribe")]
+    [Route("[action]")]
     public async Task<IActionResult> Subscribe([FromHeader]UserSubscription userSubscription, IEnumerable<Event> events)
     {
         var subscriptionsDone = new List<Event>(); 

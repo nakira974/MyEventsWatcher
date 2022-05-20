@@ -74,7 +74,7 @@ public class EventsWatcher : IHostedService, IDisposable
                     var record = new Event(@event);
                     var venues = GetVenues(@event?.Embedded.Venues);
                    
-                    if (record is not null && !await PostEntity(pool:"Entities", entity:record)) return;
+                    if (record is not null && !await PostEntity(pool:"Entities", entity:record, args:"entities/")) return;
                     
                     // ReSharper disable once AsyncVoidLambda
                     //On fait le lien event-venue
@@ -87,7 +87,7 @@ public class EventsWatcher : IHostedService, IDisposable
                             relationshipEntities.Add(operationEntity);
                         }
 
-                        if (!await PostEntity(pool:"Entities", entity:venue)) 
+                        if (!await PostEntity(pool:"Entities", entity:venue, args:"entities/")) 
                             _logger.LogWarning($"Venue ID : {venue.Id} has not been integrated into Orion Brocker");
                     });
                 }
@@ -198,13 +198,13 @@ public class EventsWatcher : IHostedService, IDisposable
     /// <param name="pool"></param>
     /// <param name="entity"></param>
     /// <returns></returns>
-    private async Task<bool> PostEntity(string pool, object entity)
+    private async Task<bool> PostEntity(string pool, object entity, string args = "")
     {
         var result = false;
         try
         {
             var client = _httpClient.CreateClient(pool);
-            var response = await client.PostAsJsonAsync(string.Empty, entity);
+            var response = await client.PostAsJsonAsync(args, entity);
             response.EnsureSuccessStatusCode();
             result = true;
         }

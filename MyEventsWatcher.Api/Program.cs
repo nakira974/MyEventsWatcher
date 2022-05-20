@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -14,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 #region Services
-builder.Services.AddHostedService<EventsWatcher>();
+//builder.Services.AddHostedService<EventsWatcher>();
 builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppConfig"));
 builder.Services.AddTransient<IJsonSerializer, JsonSerializer>();
 #endregion
@@ -50,7 +51,9 @@ builder.Services.AddHttpClient("Entities",
         client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:entities")
             .Get<string>());
         client.DefaultRequestHeaders.Add("User-Agent", "MyEventsWatcher-Api");
-        
+        client.DefaultRequestVersion = HttpVersion.Version11;
+        client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact;
+
     });
 
 builder.Services.AddHttpClient("Entities-Relationship",
@@ -59,7 +62,8 @@ builder.Services.AddHttpClient("Entities-Relationship",
         client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:relationship")
             .Get<string>());
         client.DefaultRequestHeaders.Add("User-Agent", "MyEventsWatcher-Api");
-        
+        client.DefaultRequestVersion = HttpVersion.Version11;
+        client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact;
     });
 
 builder.Services.AddHttpClient("DiscoveryApi",
@@ -68,6 +72,8 @@ builder.Services.AddHttpClient("DiscoveryApi",
         client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:discoveryBaseUri")
             .Get<string>());
         client.DefaultRequestHeaders.Add("User-Agent", "MyEventsWatcher-Api");
+        client.DefaultRequestVersion = HttpVersion.Version11;
+        client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact;
     }).ConfigurePrimaryHttpMessageHandler(() =>
 {
     //Handler pour encapsuler l'authentification NTLM avec les credentials de l'utilisateur windows
@@ -86,6 +92,8 @@ builder.Services.AddHttpClient("Events",
         client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:events")
             .Get<string>());
         client.DefaultRequestHeaders.Add("User-Agent", "MyEventsWatcher-Api");
+        client.DefaultRequestVersion = HttpVersion.Version11;
+        client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact;
     }).ConfigurePrimaryHttpMessageHandler(() =>
 {
     //Handler pour encapsuler l'authentification NTLM avec les credentials de l'utilisateur windows
@@ -104,6 +112,8 @@ builder.Services.AddHttpClient("Venues",
         client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:venues")
             .Get<string>());
         client.DefaultRequestHeaders.Add("User-Agent", "MyEventsWatcher-Api");
+        client.DefaultRequestVersion = HttpVersion.Version11;
+        client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact;
     }).ConfigurePrimaryHttpMessageHandler(() =>
 {
     //Handler pour encapsuler l'authentification NTLM avec les credentials de l'utilisateur windows
@@ -123,6 +133,8 @@ builder.Services.AddHttpClient("Subscriptions",
         client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:subscriptions")
             .Get<string>());
         client.DefaultRequestHeaders.Add("User-Agent", "MyEventsWatcher-Api");
+        client.DefaultRequestVersion = HttpVersion.Version11;
+        client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact;
     }).ConfigurePrimaryHttpMessageHandler(() =>
 {
     //Handler pour encapsuler l'authentification NTLM avec les credentials de l'utilisateur windows
