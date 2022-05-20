@@ -75,6 +75,8 @@ public class EventsWatcher : IHostedService, IDisposable
                     var venues = GetVenues(@event?.Embedded.Venues);
                    
                     if (record is not null && !await PostEntity(pool:"Entities", entity:record, args:"entities/")) return;
+                    var updateOperation = new UpdateOperation(venues);
+                    if (venues is not null && !await PostEntity(pool: "Entities-Relationship", entity: updateOperation)) return;
                     
                     // ReSharper disable once AsyncVoidLambda
                     //On fait le lien event-venue
@@ -86,9 +88,10 @@ public class EventsWatcher : IHostedService, IDisposable
                                 .EntityRelationship(@event.Id, venue.Id);
                             relationshipEntities.Add(operationEntity);
                         }
-
-                        if (!await PostEntity(pool:"Entities", entity:venue, args:"entities/")) 
+                        /*
+                         * if (!await PostEntity(pool:"Entities", entity:venue, args:"entities/")) 
                             _logger.LogWarning($"Venue ID : {venue.Id} has not been integrated into Orion Brocker");
+                         */
                     });
                 }
                 

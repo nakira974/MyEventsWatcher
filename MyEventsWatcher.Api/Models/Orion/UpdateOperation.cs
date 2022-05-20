@@ -6,7 +6,7 @@ namespace MyEventsWatcher.Api.Models.Orion;
 
 public class UpdateOperation : Operation
 {
-    public UpdateOperation(IEnumerable<EntityRelationship> entities)
+    public UpdateOperation(IEnumerable<object> entities)
     {
         Entities = entities.ToList();
     }
@@ -14,5 +14,5 @@ public class UpdateOperation : Operation
     public string ActionType => "APPEND";
 
     [JsonPropertyName("entities")]
-    public List<EntityRelationship> Entities { get; set; }
+    public List<object> Entities { get; set; }
 }

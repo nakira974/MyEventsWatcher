@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 #region Services
-//builder.Services.AddHostedService<EventsWatcher>();
+builder.Services.AddHostedService<EventsWatcher>();
 builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppConfig"));
 builder.Services.AddTransient<IJsonSerializer, JsonSerializer>();
 #endregion
