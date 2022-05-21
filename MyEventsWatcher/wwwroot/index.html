@@ -8,7 +8,8 @@
 	<link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
 	<link href="css/app.css" rel="stylesheet" />
 	<link href="MyEventsWatcher.styles.css" rel="stylesheet" />
-	<link rel="stylesheet" href="_content/Radzen.Blazor/css/dark-base.css">
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/dark-base.css">
+
 </head>
 
 <body>
@@ -25,18 +26,35 @@
 
 	<script src="_framework/blazor.webview.js" autostart="false"></script>
 	<script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTihBXefiT1-eOKmA4vEZkkeuiBNb7iF4"></script>
-	<script>
-		function initialize() {
-			var latlng = new google.maps.LatLng(40.716948, -74.003563);
-			var options = {
-				zoom: 14, center: latlng,
-				mapTypeId: google.maps.MapTypeId.ROADMAP
-			};
-			var map = new google.maps.Map(document.getElementById
-				("map"), options);
-		}
-	</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTihBXefiT1-eOKmA4vEZkkeuiBNb7iF4&"></script>
+<script src="~/js/main.js"></script>
+<script>
+    function initialize() {
+        var index = 0;
+        var mapOptions = {
+            zoom: 14,
+            center: new google.maps.LatLng(52.5498783, 13.425209099999961),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+		var map = new google.maps.Map(document.getElementById('map'),
+			//, -118.383803
+            {
+                center: new google.maps.LatLng(34.075295,-118.383803),
+                zoom: 12,
+                mapId: '37843e2acafff203'
+			});
+
+        new google.maps.Marker({
+            position: new google.maps.LatLng(34.075295, -118.383803),
+			map,
+			icon: './icons/map_character.png',
+            title: "Your current position",
+        });
+		//displayVenues(map, venues);
+    }
+</script>
+
 </body>
 
 </html>
