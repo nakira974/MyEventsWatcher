@@ -121,7 +121,7 @@
                             html_list = "<ul>";
                             console.log(data);
                             for (let i = 0; i < data.length; i++) 
-                                html_list += "<li>" + '<a href="' + data[i].url.value + '">'+data[i].name.value+'</a>' + "</li>";
+                                html_list += "<li>" + '<a href="' + data[i].url.value + '">'+data[i].name.value + " " +  data[i].sales.value.public.endDateTime.value +'</a>' + "</li>";
 
                             html_list += "</ul>";
 						})

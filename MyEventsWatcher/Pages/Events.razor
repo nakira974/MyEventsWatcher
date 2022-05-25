@@ -9,7 +9,7 @@
         <RadzenDataGrid TItem="Event" Data="@CurrentEvents" AllowFiltering="true" FilterMode="FilterMode.SimpleWithMenu">
             
             <Columns>
-                <RadzenDataGridColumn TItem="Event" Title="Event's Name'" Property="Name.Value"/>
+                <RadzenDataGridColumn TItem="Event" Title="Event's Name" Property="Name.Value"/>
                 @*
                     <RadzenDataGridHeaderCell>
                 <FilterTemplate>
@@ -21,8 +21,10 @@
                 *@
                 
                 
-                <RadzenDataGridColumn TItem="Event" Title="Start Date Time" Property="Dates.EventValue.Start.DateTime.Value"/>
-                <RadzenDataGridColumn TItem="Event" Title="Place" >
+                <RadzenDataGridColumn TItem="Event" Title="Start of event" Property="Dates.EventValue.Start.DateTime.Value"/>
+                <RadzenDataGridColumn TItem="Event" Title="End of sales date" Property="Sales.EventValue.Public.EndDateTime.Value"/>
+
+                <RadzenDataGridColumn TItem="Event" Title="Event's place" >
                     <Template Context="currentEvent">
                         @if (currentEvent.Url is not null && !string.IsNullOrEmpty(currentEvent.Url.Value))
                         {
