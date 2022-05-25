@@ -1,10 +1,13 @@
 using System.Globalization;
+using System.Text;
 using MyEventsWatcher.Api.Models.Orion;
 using MyEventsWatcher.Shared;
 using MyEventsWatcher.Shared.Models;
 using MyEventsWatcher.Shared.Models.Orion;
 using MyNamespace;
 using Classification = MyEventsWatcher.Shared.Models.Classification;
+using EventId = MyEventsWatcher.Shared.Models.Orion.EventId;
+
 // ReSharper disable InconsistentNaming
 // ReSharper disable All
 
@@ -45,7 +48,7 @@ public class EventsWatcher : IHostedService, IDisposable
         _logger.LogInformation("Timed Hosted Service running");
 
         _timer = new Timer(DoWork, null, TimeSpan.Zero, 
-            TimeSpan.FromMinutes(120));
+            TimeSpan.FromHours(12));
 
         return Task.CompletedTask;
     }
@@ -66,7 +69,7 @@ public class EventsWatcher : IHostedService, IDisposable
             var unused = string.Empty;
             
             // ReSharper disable once AsyncVoidLambda
-            discoveryEvents?.Embedded.Events.ForEach(async newEvent =>
+            foreach (var newEvent in discoveryEvents?.Embedded.Events!)
             {
                 var @event = await GetEventDetails(newEvent.Id);
                 try
@@ -74,19 +77,25 @@ public class EventsWatcher : IHostedService, IDisposable
                     unused = @event?.Id;
                     var record = new Event(@event);
                     var venues = GetVenues(@event?.Embedded.Venues);
-                   
-                    if (record is not null && !await PostEntity(pool:"Entities", entity:record, args:"entities/")) return;
-                    var updateOperation = new UpdateOperation(venues);
-                    if (venues is not null && !await PostEntity(pool: "Entities-Relationship", entity: updateOperation)) return;
+                    record.Venues = new EventVenues();
+                    record.Venues.Value = venues;
                     
-                    // ReSharper disable once AsyncVoidLambda
-                    //On fait le lien event-venue
+                     var updateOperation = new UpdateOperation(venues);
+                     updateOperation.Entities.Add(record);
+                     
+                     if (record is not null && !await PostEntity(pool:"Entities-Relationship", entity:updateOperation))  
+                         _logger.LogWarning($"Event id : {record.EventId} orion integration has failed");
+                     else
+                         _logger.LogWarning($"Event id : {record?.EventId} orion update successfull");
+
+                     // ReSharper disable once AsyncVoidLambda
+                    //On fait le lien event->venue
                     venues?.ForEach(venue =>
                     {
-                        if (@event is not null)
+                        if (@record is not null)
                         {
                             var operationEntity = new Operation
-                                .EntityRelationship(@event.Id, venue.Id);
+                                .EntityRelationship(venue.Id,record.EventId, record.Type);
                             relationshipEntities.Add(operationEntity);
                         }
                         /*
@@ -102,7 +111,7 @@ public class EventsWatcher : IHostedService, IDisposable
                     Console.WriteLine(e);
                     _logger.LogWarning($"Get Event details ID: {unused} failed", e);
                 }
-            });
+            }
 
             if (relationshipEntities is not {Count: 0})
             {
@@ -114,8 +123,7 @@ public class EventsWatcher : IHostedService, IDisposable
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            _logger.LogWarning(e.Message);
         }
         
         _logger.LogInformation(
@@ -130,14 +138,20 @@ public class EventsWatcher : IHostedService, IDisposable
     private List<VenueValue> GetVenues(IEnumerable<Venue>? venues)
 {
     var result = new List<VenueValue>();
-
+    
+    
     if (venues is not null)
         foreach (var venue in venues)
         {
-            var value = new VenueValue()
+            var slashChar = @"\";
+            var backSlashChar = @"/";
+            var parkingDetails = venue?.ParkingDetail.StripUnicodeCharactersFromString() ?? string.Empty;
+            parkingDetails = parkingDetails.Replace("*", ";");
+            parkingDetails = parkingDetails.Replace(slashChar, string.Empty);
+            parkingDetails = parkingDetails.Replace(backSlashChar, string.Empty);
+            
+            var value = new VenueValue(venue?.Id ??  new Guid().ToString("N"))
             {
-                _id = venue.Id,
-
                 Aliases = new Aliases()
                 {
                     AlliasesValue = venue?.Aliases ?? new List<string>()
@@ -156,8 +170,8 @@ public class EventsWatcher : IHostedService, IDisposable
                     {
                         Coordinates = new List<float?>(2)
                         {
+                            float.Parse(venue?.Location?.Longitude ?? "0.0", CultureInfo.InvariantCulture),
                             float.Parse(venue?.Location?.Latitude ?? "0.0", CultureInfo.InvariantCulture),
-                            float.Parse(venue?.Location?.Longitude ?? "0.0", CultureInfo.InvariantCulture)
                         }
                     }
                 },
@@ -187,7 +201,7 @@ public class EventsWatcher : IHostedService, IDisposable
                 },
                 ParkingDetail = new EventParkingDetail()
                 {
-                    Value = venue?.ParkingDetail ?? string.Empty
+                    Value = parkingDetails
                 }
             };
             result.Add(value);
@@ -209,7 +223,9 @@ public class EventsWatcher : IHostedService, IDisposable
         try
         {
             var client = _httpClient.CreateClient(pool);
-            var response = await client.PostAsJsonAsync(args, entity);
+            var json = await _jsonSerializer.SerializeAsync(entity);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(args, httpContent);
             response.EnsureSuccessStatusCode();
             result = true;
         }
@@ -222,6 +238,8 @@ public class EventsWatcher : IHostedService, IDisposable
         return result;
     }
 
+    
+    
     /// <summary>
     /// Stop la tâche de fond.
     /// </summary>

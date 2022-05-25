@@ -1,6 +1,8 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using MyEventsWatcher.Shared;
 using MyEventsWatcher.Shared.Models.Orion;
+using MyNamespace;
 
 namespace MyEventsWatcher.Api.Controllers;
 
@@ -20,7 +22,7 @@ public class EventsController : ControllerBase
         _httpClient = httpClient;
         _jsonSerializer = jsonSerializer;
     }
-
+    
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status204NoContent)]
@@ -30,18 +32,46 @@ public class EventsController : ControllerBase
     {
         IActionResult result = StatusCode(204, new List<Event>());
         var client = _httpClient.CreateClient("Entities");
-        var uri = $"?georel=near;maxDistance:{range}&geometry=point&coords={latitude},{longitude}&type=Event&options=keyValues";
+        var uri = $"entities?georel=near;maxDistance:{range}&geometry=point&coords={latitude.ToString("0.000000", CultureInfo.InvariantCulture)},{longitude.ToString("0.000000", CultureInfo.InvariantCulture)}&type=Venue";
         try
         {
-            var content = await client.GetFromJsonAsync<IEnumerable<Event?>?>(uri);
+            var response = await client.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            var content =
+                await _jsonSerializer.DeserializeAsync<List<VenueValue?>?>(json);
             
-            switch ((content ?? Array.Empty<Event?>()).Count().Equals(0))
+            switch ((content ?? new List<VenueValue?>()).Count.Equals(0))
             {
                 case true:
                     break;
                 
                 case false:
-                    result = Ok(content);
+                    var rangeEvents = new List<Event>();
+                    foreach (var venue in content)
+                    {
+                        try
+                        {
+                            uri = $"entities/?q=refVenue=={venue?.Id}&options=count";
+                            response = await client.GetAsync(uri);
+                            response.EnsureSuccessStatusCode();
+            
+                            var events = await _jsonSerializer
+                                .DeserializeAsync<List<Event>?>(await response
+                                    .Content.ReadAsStringAsync());
+                        
+                            events?.ForEach(@event =>
+                            {
+                                rangeEvents.Add(@event);
+                            });
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.LogError($"Error while fetching Venue's {venue.Id} related Events", e.StackTrace);
+                        }
+                       
+                    }
+                    result = Ok(rangeEvents);
                     break;
             }
         }
@@ -53,7 +83,7 @@ public class EventsController : ControllerBase
 
         return result;
     }
-
+    
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status204NoContent)]
@@ -104,7 +134,9 @@ public class EventsController : ControllerBase
         
         return result;
     }
-
+    
+    //http://{{orion}}/v2/entities/?q=refEvent==urn:ngsi-ld:Event:k7vGF97JMbABS&options=count&attrs=type
+    
     [HttpPost]
     [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status204NoContent)]

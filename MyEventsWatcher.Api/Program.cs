@@ -26,10 +26,9 @@ builder.WebHost.UseQuic(options =>
 });
 #endregion
 
-
 // Add services to the container.
 #region Services
-//builder.Services.AddHostedService<EventsWatcher>();
+builder.Services.AddHostedService<EventsWatcher>();
 builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppConfig"));
 builder.Services.AddTransient<IJsonSerializer, JsonSerializer>();
 #endregion
@@ -39,11 +38,6 @@ builder.Services.AddTransient<IJsonSerializer, JsonSerializer>();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.WriteIndented = true;
-    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-    options.JsonSerializerOptions.DefaultBufferSize = 1500;
-    options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Default;
-    options.JsonSerializerOptions.AllowTrailingCommas = false;
-    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
 });
 #endregion
 
@@ -162,7 +156,6 @@ builder.Services.AddHttpClient("Subscriptions",
 }).SetHandlerLifetime(TimeSpan.FromMinutes(30));
 #endregion
 
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 #region Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -172,6 +165,11 @@ builder.Services.AddSwaggerGen();
 //Configure the web application.
 #region WebApplication
 var app = builder.Build();
+
+app.UseCors(policyBuilder => policyBuilder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());  
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

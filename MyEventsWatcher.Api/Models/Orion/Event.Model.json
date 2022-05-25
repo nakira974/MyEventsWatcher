@@ -1,172 +1,141 @@
 {
-  "id": "urn:ngsi-ld:Event:Z7r9jZ1Ad8ekd",
-  "type": "Event",
-  "name": {
-    "type": "Text",
-    "value": "Paul McCartney"
-  },
-  "event_code": {
-    "type": "Text",
-    "value": "Z7r9jZ1Ad8ekd"
-  },
-  "info": {
-    "type": "Text",
-    "value": null
-  },
-  "test": {
-    "type": "boolean",
-    "value": false
-  },
-  "url": {
-    "type": "Text",
-    "value": "https://www.ticketmaster.com/event/Z7r9jZ1Ad8ekd"
-  },
-  "locale": {
-    "type": "Text",
-    "value": "en-us"
-  },
-  "sales": {
-    "value": {
-      "public": {
-        "startDateTime": {
-          "type": "DateTime",
-          "value": "2022-02-22T14:05:00Z"
-        },
-        "startTBD": {
-          "type": "boolean",
-          "value": false
-        },
-        "startTBA": {
-          "type": "boolean",
-          "value": false
-        },
-        "endDateTime": {
-          "type": "DateTime",
-          "value": "2022-06-13T00:00:00Z"
-        }
-      },
-      "startDateTime": null,
-      "startTBD": null,
-      "startTBA": null,
-      "endDateTime": null,
-      "start": null,
-      "dateTime": null,
-      "dateTBD": null,
-      "dateTBA": null,
-      "timeTBA": null,
-      "noSpecificTime": null
-    }
-  },
-  "dates": {
-    "value": {
-      "public": null,
-      "startDateTime": null,
-      "startTBD": null,
-      "startTBA": null,
-      "endDateTime": null,
-      "start": {
-        "dateTime": {
-          "type": "DateTime",
-          "value": "2022-06-13T00:00:00Z"
-        },
-        "dateTBD": {
-          "type": "boolean",
-          "value": false
-        },
-        "dateTBA": {
-          "type": "boolean",
-          "value": false
-        },
-        "timeTBA": {
-          "type": "boolean",
-          "value": false
-        },
-        "noSpecificTime": {
-          "type": "boolean",
-          "value": false
-        }
-      },
-      "dateTime": null,
-      "dateTBD": null,
-      "dateTBA": null,
-      "timeTBA": null,
-      "noSpecificTime": null
-    }
-  },
-  "classfications": {
-    "value": [
-      {
-        "value": {
-          "genre": {
-            "type": "Text",
-            "value": "Rock"
-          },
-          "segment": {
-            "type": "Text",
-            "value": "Music"
-          },
-          "type": {
-            "type": "Text",
-            "value": ""
-          }
-        }
+  "actionType": "APPEND",
+  "entities": [
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpakS7e",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:k7vGF97JMbABS"
       }
-    ]
-  },
-  "venues": {
-    "value": [
-      {
-        "aliases": {
-          "value": []
-        },
-        "city": {
-          "type": "string",
-          "value": "Baltimore"
-        },
-        "accepted_payment": null,
-        "country": {
-          "type": "string",
-          "value": "United States Of America"
-        },
-        "location": {
-          "type": "geo:json",
-          "value": {
-            "type": "Point",
-            "coordinates": [
-              39.294,
-              -76.6226
-            ]
-          }
-        },
-        "url": {
-          "type": "string",
-          "value": ""
-        },
-        "parking_detail": {
-          "type": "string",
-          "value": ""
-        },
-        "name": {
-          "type": "string",
-          "value": "Camden Yards"
-        },
-        "children_rule": {
-          "type": "string",
-          "value": ""
-        },
-        "general_rule": {
-          "type": "string",
-          "value": ""
-        },
-        "address": {
-          "type": "Text",
-          "value": "333 West Camden St."
-        },
-        "twitter": {
-          "type": "Text",
-          "value": ""
-        }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpZAJFAkA",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:G5eFZpy6f9j4u"
       }
-    ]
-  }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpZAJ67eA",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:vvG1YZ96hvSUYL"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpakwYe",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:k7vGFpyr1uoeH"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpZAEAIIA",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:vvG1FZ969_LkKk"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpZA1eE1A",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:G5viZ97EI6MbZ"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpZA6t77A",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:G5vVZpwx_I3Kp"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpZAdEt6A",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:G5vzZ96h0cPBi"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpZA6AEaA",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:vvG1VZ97Enjmar"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpZAEknnA",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:vvG1HZ9anLHoEI"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpZAdJ1vA",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:k7vGF9anxhJp5"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpaoU8e",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:vvG1FZ96QyDAgo"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpZAtv11A",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:vvG1zZpUJ2Fxb3"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpZAEAFeA",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:vvG1YZ96xLhNRL"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpZAtv11A",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:vvG1zZpUJ2FebG"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZ917A3c0",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:vvG1IZ96NvbwQH"
+      }
+    },
+    {
+      "id": "urn:ngsi-ld:Venue:KovZpZAdEtkA",
+      "type": "Venue",
+      "refStore": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Event:G5vzZ9epTCoEQ"
+      }
+    }
+  ]
 }

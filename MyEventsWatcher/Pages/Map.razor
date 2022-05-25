@@ -1,19 +1,103 @@
 ﻿@page "/map"
+@using MyEventsWatcher.Shared.Models.Orion
 @inject IJSRuntime _jSRuntime
-
-<h1>Display Google Map</h1>
-<div id="map" style="height:500px;width:100%;">
+@inject IJsonSerializer _jsonSerializer
+<h1>Display Events</h1>
+<div class="col-lg-3 p-3 row">
+    <RadzenCard>
+        <h4 class="mb-4">Range</h4>
+        <RadzenNumeric TValue="int?" Placeholder="10000" Step="10000" Change="async arg => {await OnChange(arg.Value); }" Class="w-100" />
+        <h4 class="mb-4">Show Range</h4>
+        <RadzenCheckBox @bind-Value=@_showRange  Name="CheckBox1" TValue="bool" Change="async arg => { await OnChange(_range); }"  />
+    </RadzenCard>
 </div>
+<div  class="row" id="map" style="height:500px;width:100%;"/>
+
 
 @code{
-
+    IEnumerable<Event> CurrentEvents { get; set; }
+    IEnumerable<VenueValue> Venues { get; set; }
+    int _range { get; set; }
+    bool _showRange { get; set; }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        var client = new HttpClient(new HttpClientHandler
+        {
+            UseDefaultCredentials = false,
+            AllowAutoRedirect = true,
+    //Pour la future prise en charge de ssl, sert � n�gocier le handshake avec le serveur pour les requ�tes
+            ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+        });
+
+        client.BaseAddress = new Uri(@"https://localhost:7283/services/v1/");
+        
         if (firstRender)
         {
-            await _jSRuntime.InvokeVoidAsync("initialize", null);
+            try
+            {
+                _range = 10000;
+                _showRange = false;
+                await FetchEvents(client);
+                await FetchVenues(client);
+                var jsonObject = await _jsonSerializer.SerializeAsync(Venues.ToArray());
+                await _jSRuntime.InvokeVoidAsync("initialize",jsonObject, _showRange, _showRange );
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+    }
+
+    private async Task OnChange(int range)
+    {
+        try
+        {
+            _range = range;
+            var jsonObject = await _jsonSerializer.SerializeAsync(Venues.ToArray());
+            await _jSRuntime.InvokeVoidAsync("initialize",jsonObject, _range, _showRange );
             StateHasChanged();
         }
-
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+       
     }
+
+    private async Task FetchEvents(HttpClient client)
+    {
+        try
+        {
+            var response = await client.GetAsync("Events");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            CurrentEvents = await _jsonSerializer.DeserializeAsync<IEnumerable<Event>>(json);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    private async Task FetchVenues(HttpClient client)
+    {
+        try
+        {
+            var response = await client.GetAsync("Venues");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            Venues = await _jsonSerializer.DeserializeAsync<IEnumerable<VenueValue>>(json);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
 }

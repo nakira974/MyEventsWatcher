@@ -1,7 +1,95 @@
 ﻿@page "/events"
+@using MyEventsWatcher.Shared.Models.Orion
+@using System.Net.Http.Json
+@inject IJsonSerializer _jsonSerializer
 
-<h3>Events</h3>
-
+<div class="container">
+    @if (CurrentEvents is not null)
+    {
+        <RadzenDataGrid TItem="Event" Data="@CurrentEvents" AllowFiltering="true" FilterMode="FilterMode.SimpleWithMenu">
+            
+            <Columns>
+                <RadzenDataGridColumn TItem="Event" Title="Event's Name'" Property="Name.Value"/>
+                @*
+                    <RadzenDataGridHeaderCell>
+                <FilterTemplate>
+                    <RadzenDropDown @bind-Value=@CurrentEvents Style="width:100%;"
+                                    Change="@() => OnSelectedCurrentEventsChange" Data="@(Name.Value)" AllowClear="true" Multiple="true" />
+                </FilterTemplate>
+            </RadzenDataGridHeaderCell>
+                     FilterValue="@CurrentEvents" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
+                *@
+                
+                
+                <RadzenDataGridColumn TItem="Event" Title="Start Date Time" Property="Dates.EventValue.Start.DateTime.Value"/>
+                <RadzenDataGridColumn TItem="Event" Title="Place" >
+                    <Template Context="currentEvent">
+                        @if (currentEvent.Url is not null && !string.IsNullOrEmpty(currentEvent.Url.Value))
+                        {
+                            <a href="@currentEvent.Url.Value">Link to
+                                @if (currentEvent.Venues is not null)
+                                {
+                                    @currentEvent.Venues.Value.FirstOrDefault()?.Name?.Value
+                                }
+                                reservation</a>
+                        }
+                        else
+                        {
+                            <span>Reservation not available</span>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+</div>
 @code {
+    IEnumerable<Event> CurrentEvents { get; set; }
+  
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            var client = new HttpClient(new HttpClientHandler
+            {
+                UseDefaultCredentials = false,
+                AllowAutoRedirect = true,
+    //Pour la future prise en charge de ssl, sert � n�gocier le handshake avec le serveur pour les requ�tes
+                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+            });
+
+            client.BaseAddress = new Uri(@"https://localhost:7283/services/v1/");
+            var response = await client.GetAsync("Events");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            CurrentEvents = await _jsonSerializer.DeserializeAsync<IEnumerable<Event>>(json);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    
+        /*
+           void OnSelectedCurrentEventsChange(object value)
+           {
+           if (CurrentEvents != null && !CurrentEvents.Any())
+           {
+           CurrentEvents = null;  
+           }
+           }
+             void OnSelectedTOCChange(object value)
+           {
+           if (currentTOC == TitleOfCourtesy.All)
+           {
+           currentTOC = null;
+           }
+           }
+         */
+
+
+
+      
+    }
 
 }

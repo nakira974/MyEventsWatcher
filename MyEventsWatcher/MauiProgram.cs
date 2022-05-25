@@ -1,4 +1,6 @@
-﻿namespace MyEventsWatcher;
+﻿using MyEventsWatcher.Shared;
+
+namespace MyEventsWatcher;
 
 public static class MauiProgram
 {
@@ -13,6 +15,7 @@ public static class MauiProgram
 			});
 
 		builder.Services.AddMauiBlazorWebView();
+        builder.Services.AddScoped<IJsonSerializer, JsonSerializer>();
 #if DEBUG
 		builder.Services.AddBlazorWebViewDeveloperTools();
 #endif

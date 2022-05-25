@@ -8,8 +8,10 @@
 	<link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
 	<link href="css/app.css" rel="stylesheet" />
 	<link href="MyEventsWatcher.styles.css" rel="stylesheet" />
-    <link rel="stylesheet" href="_content/Radzen.Blazor/css/dark-base.css">
-
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default.css">
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap');
+	</style>
 </head>
 
 <body>
@@ -29,29 +31,115 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTihBXefiT1-eOKmA4vEZkkeuiBNb7iF4&"></script>
 <script src="~/js/main.js"></script>
 <script>
-    function initialize() {
-        var index = 0;
-        var mapOptions = {
+	function animateHeaderPanel(){
+		// Wrap every letter in a span
+		var textWrapper = document.querySelector('.ml7 .letters');
+		textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+
+		anime.timeline({loop: true})
+				.add({
+					targets: '.ml7 .letter',
+					translateY: ["1.1em", 0],
+					translateX: ["0.55em", 0],
+					translateZ: 0,
+					rotateZ: [180, 0],
+					duration: 750,
+					easing: "easeOutExpo",
+					delay: (el, i) => 50 * i
+				}).add({
+			targets: '.ml7',
+			opacity: 0,
+			duration: 1000,
+			easing: "easeOutExpo",
+			delay: 1000
+		});
+	}
+	
+    async function initialize(venues, range, circleAllowed) {
+        const arr_from_json = JSON.parse(venues);
+        const index = 0;
+        const mapOptions = {
             zoom: 14,
             center: new google.maps.LatLng(52.5498783, 13.425209099999961),
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
 
-		var map = new google.maps.Map(document.getElementById('map'),
-			//, -118.383803
+        var map = new google.maps.Map(document.getElementById('map'),
+            //, -118.383803
             {
-                center: new google.maps.LatLng(34.075295,-118.383803),
+                center: new google.maps.LatLng(34.075295, -118.383803),
                 zoom: 12,
                 mapId: '37843e2acafff203'
-			});
+            });
 
+         var infoWindow = new google.maps.InfoWindow();
+
+		 if(circleAllowed){
+			 new google.maps.Circle({
+				 strokeColor: "#FF0000",
+				 strokeOpacity: 0.8,
+				 strokeWeight: 2,
+				 fillColor: "#FF0000",
+				 fillOpacity: 0.35,
+				 map,
+				 center: new google.maps.LatLng(34.075295, -118.383803),
+				 radius: range,
+			 });
+		 }
+		
+		
         new google.maps.Marker({
             position: new google.maps.LatLng(34.075295, -118.383803),
-			map,
-			icon: './icons/map_character.png',
+            map,
+
+            icon: './icons/map_character.png',
             title: "Your current position",
         });
-		//displayVenues(map, venues);
+
+        arr_from_json.forEach(venue => {
+            var myLatLng = { lat: venue.location.value.coordinates[1], lng: venue.location.value.coordinates[0] };
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                map,
+                title: venue.name.value,
+                icon: './icons/stadium.png'
+            });
+            //Attach click event to the marker.
+            (async function (marker, venue) {
+                var html_list = "";
+                const venue_id = venue.venue_code.value;
+                fetch(`https://localhost:7283/services/v1/Venues/GetVenueEvents?id=${venue_id}`)
+						.then(response => {
+							// indicates whether the response is successful (status code 200-299) or not
+							if (!response.ok) {
+								throw new Error(`Request failed with status ${reponse.status}`)
+							}
+							console.log('Venue : ' + venue.id + ' details has been fetched.');
+							return response.json()
+						})
+						.then(data => {
+                            html_list = "<ul>";
+                            console.log(data);
+                            for (let i = 0; i < data.length; i++) 
+                                html_list += "<li>" + '<a href="' + data[i].url.value + '">'+data[i].name.value+'</a>' + "</li>";
+
+                            html_list += "</ul>";
+						})
+						.catch(error => console.log("Failed while fetching "+venue.id +" related events.", error));
+				
+				google.maps.event.addListener(marker, "click", function (e) {
+                    //Wrap the content inside an HTML DIV in order to set height and width of InfoWindow.
+                    infoWindow.setContent("<div style = 'width:200px;min-height:40px'> Name :" + venue.name.value + "</div>"
+                        + "<div style = 'width:200px;min-height:40px'> Address :" + venue.address.value + "</div>"+
+                        "<div style = 'width:200px;min-height:40px'>" + '<a href="' + venue.url.value + '">Venue Details</a>' +"</div>"+
+							"<div style = 'width:200px;min-height:40px'> <h5>Events</h5>" + html_list +"</div>");
+                    infoWindow.open(map, marker);
+                });
+
+            })(marker, venue);
+        });
+
+		
     }
 </script>
 

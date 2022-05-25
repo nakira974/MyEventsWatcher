@@ -4,7 +4,7 @@ namespace MyEventsWatcher.Api.Models.Orion;
 
 public record Line1
 {
-    [JsonPropertyName("type")] public const string Type = "string";
+    [JsonPropertyName("type")] public const string Type = "Text";
         
     [JsonPropertyName("value")] public string Value { get; set; }
 }

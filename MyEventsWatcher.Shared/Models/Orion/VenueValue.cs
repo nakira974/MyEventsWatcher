@@ -5,17 +5,28 @@ namespace MyEventsWatcher.Shared.Models.Orion;
 
 public record VenueValue
 {
-    [NotMapped] public string? _id { get; set; }
-    [JsonPropertyName("id")] public string Id => $"urn:ngsi-ld:Venue:{_id}";
+    public VenueValue(string id)
+    {
+        VenueId = new EventId()
+        {
+            Value = id
+        };
+            
+    }
+    [JsonPropertyName("id")] public string Id
+    {
+        get { return $"urn:ngsi-ld:Venue:{VenueId.Value}"; }
+    }
+
     [JsonPropertyName("type")] public string Type => $"Venue";
 
-    [JsonPropertyName("aliases")]
+    [JsonIgnore]
     public Aliases? Aliases { get; set; }
 
     [JsonPropertyName("city")]
     public EventCity? City { get; set; }
 
-    [JsonPropertyName("accepted_payment")]
+    [JsonIgnore]
     public AcceptedPayment? AcceptedPayment { get; set; }
 
     [JsonPropertyName("country")]
@@ -27,16 +38,16 @@ public record VenueValue
     [JsonPropertyName("url")]
     public VenueUrl? Url { get; set; }
 
-    [JsonPropertyName("parking_detail")]
+    [JsonIgnore]
     public EventParkingDetail? ParkingDetail { get; set; }
 
     [JsonPropertyName("name")]
     public VenueName? Name { get; set; }
 
-    [JsonPropertyName("children_rule")]
+   [JsonIgnore]
     public ChildrenRule? ChildrenRule { get; set; }
 
-    [JsonPropertyName("general_rule")]
+    [JsonIgnore]
     public GeneralRule? GeneralRule { get; set; }
         
     [JsonPropertyName("address")]
@@ -44,4 +55,7 @@ public record VenueValue
         
     [JsonPropertyName("twitter")]
     public EventTwitter? Twitter { get; set; }
+    
+    [JsonPropertyName("venue_code")]
+    public EventId VenueId { get; set; }
 }

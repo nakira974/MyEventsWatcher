@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
+using MyEventsWatcher.Api.Models.Orion;
 
-namespace MyEventsWatcher.Api.Models.Orion;
+namespace MyEventsWatcher.Shared.Models.Orion;
 
 public record Notification(
     [property: JsonPropertyName("attributes")] IReadOnlyList<string> Attributes,

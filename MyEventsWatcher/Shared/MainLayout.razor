@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@using MyEventsWatcher.Shared.Models.Orion
+@inherits LayoutComponentBase
+@inject IJsonSerializer _jsonSerializer
+@inject IJSRuntime _jSRuntime
 
 <div class="page">
 	<div class="sidebar">
@@ -7,11 +10,68 @@
 
 	<main>
 		<div class="top-row px-4">
-			<a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-		</div>
+           @if (_lowProximityEventsName is not null && _lowProximityEventsName.Count > 0)
+           {
+               var random = new Random();
+               var index = random.Next(0, _lowProximityEventsName.Count);
+
+               <h1 class="jt --debug">
+                   <span class="jt__row">
+                       <span class="jt__text">@_lowProximityEventsName[index]</span>
+                   </span>
+                   <span class="jt__row jt__row--sibling" aria-hidden="true">
+                       <span class="jt__text">@_lowProximityEventsName[index]</span>
+                   </span>
+                   <span class="jt__row jt__row--sibling" aria-hidden="true">
+                       <span class="jt__text">@_lowProximityEventsName[index]</span>
+                   </span>
+                   <span class="jt__row jt__row--sibling" aria-hidden="true">
+                       <span class="jt__text">@_lowProximityEventsName[index]</span>
+                   </span>
+               </h1>
+           } 
+        </div>
 
 		<article class="content px-4">
 			@Body
 		</article>
 	</main>
 </div>
+
+@code{
+	private List<string> _lowProximityEventsName { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstrender)
+    {
+        try
+        {
+            var client = new HttpClient(new HttpClientHandler
+            {
+                UseDefaultCredentials = false,
+                AllowAutoRedirect = true,
+    //Pour la future prise en charge de ssl, sert � n�gocier le handshake avec le serveur pour les requ�tes
+                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+            });
+
+            client.BaseAddress = new Uri(@"https://localhost:7283/services/v1/Events/Search?&latitude=33.895951&longitude=-118.220745&range=30000");
+            _lowProximityEventsName = new List<string>();
+                    
+            var response = await client.GetAsync(string.Empty);
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            var events = await _jsonSerializer.DeserializeAsync<List<Event>>(json);
+            foreach (var @event in events)
+            {
+                _lowProximityEventsName.Add(@event.Name.Value);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+	   
+           
+    }
+
+}
